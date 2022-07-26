@@ -34,6 +34,27 @@ const resolvers = {
 
     return { token, user };
   },
+  saveBook: async (
+    parent,
+    { authors, description, title, bookId, image, link },
+    context
+  ) => {
+    if (context.user) {
+      return User.findOneAndUpdate(
+        { _id: user._id },
+        {
+          $addToSet: {
+            savedBooks: { authors, description, title, bookId, image, link },
+          },
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+    }
+    throw new AuthenticationError("You need to be logged in!");
+  },
 };
 
 module.exports = resolvers;
